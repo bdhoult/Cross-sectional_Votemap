@@ -141,10 +141,10 @@ def get_txt_files_from_folder(folder_path):
 # Main script
 if __name__ == "__main__":
     # Path to the folder containing the .txt files
-    data_folder = r"C:\Users\harry\OneDrive\Documents\Geology\4th Year\Dissertation\slices_directory\-37"  
+    data_folder = r""  
 
     # Path to the folder where the vote map image will be saved
-    save_folder = r"C:\Users\harry\OneDrive\Documents\Geology\4th Year\Dissertation\Votemaps"
+    save_folder = r""
 
     # Get all .txt files in the folder
     data_files = get_txt_files_from_folder(data_folder)
