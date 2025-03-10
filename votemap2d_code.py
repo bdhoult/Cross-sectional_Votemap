@@ -3,18 +3,23 @@ from scipy.spatial import cKDTree
 import os
 import matplotlib.pyplot as plt
 
+
+
 def load_data(filepath):
-    #Load data from a .txt file and return as a numpy array
+    # Load data from a .txt file and return as a numpy array
     data = np.loadtxt(filepath)
     return data
 
+# Create a vote map from multiple datasets.
 def create_vote_map(data_files, threshold=0.2):
+    
     # Initialize a list to store all points and their values
     all_points = []
     all_values = []
 
     # Load all datasets
     for file in data_files:
+
         data = load_data(file)
         points = data[:, :3]  # X, Y, Z coordinates
         values = data[:, 3]   # Value (%)
@@ -43,6 +48,7 @@ def create_vote_map(data_files, threshold=0.2):
 
 # Convert x,y,z to lat,lon,depth
 def xyz_to_lat_lon_depth(points):
+
     x, y, z = points[:, 0], points[:, 1], points[:, 2]
     
     # Calculate longitude and latitude
@@ -82,7 +88,7 @@ def lon_to_km(lon, lat):
     dx = R * np.cos(lat_rad) * lon_rad
     return dx
 
-# Create a votemap at a given latitude
+# Create a 2D votemap at a given latitude and save it in a given folder
 def save_vote_map_as_2d_plot(lon, depth, vote_map, save_folder, filename="votemap_.png", num_files=None, lat=-37):
     # Filter to show only depths less than 1000 km
     mask = depth < 1500
@@ -93,14 +99,20 @@ def save_vote_map_as_2d_plot(lon, depth, vote_map, save_folder, filename="votema
     # Convert longitude to kilometers
     lon_km = lon_to_km(lon, lat)
 
+
+
+
+
+
     # Create a 2D plot
     fig, ax = plt.subplots(figsize=(10, 6))
+
 
     # Set colours 
     cmap = plt.get_cmap('viridis')  # Use the 'viridis' colourmap
     norm = plt.Normalize(vmin=1, vmax=num_files)  # Count votes from 1 to however many files were read. (exclude zero)
-    colors = cmap(norm(vote_map))  # Apply colourmap
-    colors[vote_map == 0] = [0, 0, 0, 0]  # Set transparent for 0 votes
+    colours = cmap(norm(vote_map))  # Apply colourmap
+    colours[vote_map == 0] = [0, 0, 0, 0]  # Set transparent for 0 votes
 
     # Scatter plot with colour representing the number of votes
     scatter = ax.scatter(lon_km, depth, c=colors, s=10)
@@ -126,6 +138,12 @@ def save_vote_map_as_2d_plot(lon, depth, vote_map, save_folder, filename="votema
     ax.axhline(y=660, color='blue', linestyle='--', linewidth=1, label='660 km')
     ax.axhline(y=1000, color='red', linestyle='--', linewidth=1, label='1000 km')
 
+
+
+
+
+
+
     # Save the plot to the specified folder
     save_path = os.path.join(save_folder, filename)
     plt.savefig(save_path, dpi=300, bbox_inches='tight', transparent=True)
@@ -133,7 +151,7 @@ def save_vote_map_as_2d_plot(lon, depth, vote_map, save_folder, filename="votema
 
     print(f"2D vote map saved as {save_path}")
 
-
+#Get a list of all .txt files in a folder
 def get_txt_files_from_folder(folder_path):
     txt_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if f.endswith('.txt')]
     return txt_files
